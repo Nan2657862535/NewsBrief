@@ -58,7 +58,7 @@ public class ForumFragment extends BaseFragment
 
         if (mTypeface != null)
         {
-            mTvForum.setTypeface(mTypeface);
+            //mTvForum.setTypeface(mTypeface);
         }
 
         initWebView();

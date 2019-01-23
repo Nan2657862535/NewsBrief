@@ -65,7 +65,7 @@ public class MessageFragment extends BaseFragment
 
         if (mTypeface != null)
         {
-            mTvMessage.setTypeface(mTypeface);
+            //mTvMessage.setTypeface(mTypeface);
         }
 
         initView();

@@ -51,11 +51,7 @@ public class MainInterfaceActivity extends BaseActivity
     private List<Fragment> mFragmentList;
 
     private int mCurFragmentIndex;
-
-
-
-
-
+    private MyFragmentPagerAdapter myFragmentPagerAdapter;
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -140,6 +136,8 @@ public class MainInterfaceActivity extends BaseActivity
             {
                 mViewPager.setCurrentItem(position);
                 mCurFragmentIndex = position;
+                myFragmentPagerAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -184,7 +182,8 @@ public class MainInterfaceActivity extends BaseActivity
         mFragmentList.add(new MessageFragment());
         mFragmentList.add(new MineFragment());
 
-        mViewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentList));
+        myFragmentPagerAdapter=new MyFragmentPagerAdapter(getSupportFragmentManager(), mFragmentList);
+        mViewPager.setAdapter(myFragmentPagerAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override

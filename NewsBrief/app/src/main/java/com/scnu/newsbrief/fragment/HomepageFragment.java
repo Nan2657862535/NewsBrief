@@ -147,6 +147,7 @@ public class HomepageFragment extends BaseFragment implements HorizontalNavigati
             public void onClick(View view)
             {
                 Intent intent = new Intent(getActivity().getApplicationContext(), SearchPageActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().getApplicationContext().startActivity(intent);
             }
         });

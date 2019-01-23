@@ -165,4 +165,5 @@ public class NewsResponseInfo extends BaseResponseInfo
             this.newFrom = newFrom;
         }
     }
+
 }

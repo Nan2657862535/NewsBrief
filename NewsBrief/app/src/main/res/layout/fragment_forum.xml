@@ -16,7 +16,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:background="@drawable/forum_head_bg_gradient"
-            android:textSize="35dp"
+            android:textSize="20dp"
             android:textStyle="bold"
             android:text="畅聊天下事"/>
 
