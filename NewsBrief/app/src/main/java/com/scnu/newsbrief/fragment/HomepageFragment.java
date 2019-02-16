@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.scnu.newsbrief.R;
@@ -28,6 +29,7 @@ import com.scnu.newsbrief.entity.homepage.Channel;
 import com.scnu.newsbrief.entity.homepage.News;
 import com.scnu.newsbrief.activity.SearchPageActivity;
 import com.scnu.newsbrief.entity.network.NewsResponseInfo;
+import com.scnu.newsbrief.network.SendMessageManager;
 import com.scnu.newsbrief.widget.HorizontalNavigationBar;
 import com.scnu.newsbrief.widget.MyHorizontalNavigationBar;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -85,14 +87,24 @@ public class HomepageFragment extends BaseFragment implements HorizontalNavigati
     //每一页的listview的适配器
     private List<NewsAdapter> newsAdapters=new LinkedList<>();
 
+    private ProgressBar mProgressBar;
+    private View rootView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         if (!EventBus.getDefault().isRegistered(this))
         EventBus.getDefault().register(this);
-        View rootView = inflater.inflate(R.layout.fragment_homepage, container, false);
+        rootView = inflater.inflate(R.layout.fragment_homepage, container, false);
+        if (Constants.newsContents!=null){
+            newsContents=Constants.newsContents;
+            classifynewsContents=Constants.classifynewsContents;
+            newscontentsdisplay=Constants.newscontentsdisplay;
+        }
 
+        initView(rootView);
+        initpage();
+        initNews();
         return rootView;
     }
 
@@ -101,14 +113,14 @@ public class HomepageFragment extends BaseFragment implements HorizontalNavigati
     {
         super.onViewCreated(view, savedInstanceState);
 
-        initView(view);
-        initpage();
-        initNews();
+
     }
+
 
     //初始化不同新闻类别的每一页
     private void initpage()
     {
+        mFragments.clear();
         for (int i = 0; i < pagenum; i++)
         {
             View view = getLayoutInflater().inflate(R.layout.content_page_homepage, null);
@@ -128,9 +140,23 @@ public class HomepageFragment extends BaseFragment implements HorizontalNavigati
                 }
             });
             mFragments.add(view);
-
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Constants.newsContents!=null){
+            newsContents=Constants.newsContents;
+            classifynewsContents=Constants.classifynewsContents;
+            newscontentsdisplay=Constants.newscontentsdisplay;
+        }
+        SendMessageManager.getInstance().getNews();
+        initView(rootView);
+        initpage();
+        initNews();
+    }
+
 
 
     private void initView(View view)
@@ -173,6 +199,8 @@ public class HomepageFragment extends BaseFragment implements HorizontalNavigati
             }
         };
 
+        //代码中控制显隐藏
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar);
     }
 
     //返回顶部导航条新闻分类数据
@@ -247,6 +275,8 @@ public class HomepageFragment extends BaseFragment implements HorizontalNavigati
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(NewsResponseInfo messageEvent) {
         //Toast.makeText(this, messageEvent.getError(), Toast.LENGTH_SHORT).show();
+        //代码中控制显隐藏
+        mProgressBar.setVisibility(View.GONE);
         if (messageEvent.getCode().equals("0")){
             //Toast.makeText(this, "请求数据失败", Toast.LENGTH_SHORT).show();
             return;
@@ -312,6 +342,7 @@ if (Constants.newsContents!=null){
         Constants.newsContents=newsContents;
         Constants.classifynewsContents=classifynewsContents;
         Constants.newscontentsdisplay=newscontentsdisplay;
+
     }
 
     //下拉刷新
